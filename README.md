@@ -1,7 +1,7 @@
 # BLOGGING APP
 
 ## Problem Statement
-Make a web application for blogging which has built in capabilities to handle various users.
+Make a backend web application for blogging which has built in capabilities to handle various users.
 
 ---
 
