@@ -11,3 +11,5 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
+auth:
+  jwt-secret: "vr4567ujbvftyuikmnbresxcfreswert8y8uhbgyf32qsefg"
