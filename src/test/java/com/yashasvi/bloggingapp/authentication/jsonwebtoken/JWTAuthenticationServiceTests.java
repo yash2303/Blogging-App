@@ -1,15 +1,14 @@
-package com.yashasvi.bloggingapp.authentication;
-
+package com.yashasvi.bloggingapp.authentication.jsonwebtoken;
 
 import com.yashasvi.bloggingapp.authentication.exceptions.InvalidTokenException;
-import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JWTAuthenticationService;
 import com.yashasvi.bloggingapp.users.UserEntity;
 import com.yashasvi.bloggingapp.users.UserRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static com.yashasvi.bloggingapp.TestUtils.BIO;
@@ -22,12 +21,14 @@ import static com.yashasvi.bloggingapp.TestUtils.USERNAME;
 class JWTAuthenticationServiceTests {
     @Autowired
     private UserRepository userRepository;
-    private JWTAuthenticationService jwtAuthenticationService;
+    @Value("${auth.jwt-secret}")
+    private String jwtSecret;
+    private JWTAuthenticationService authenticationService;
     private UserEntity savedUserEntity;
 
-    @BeforeAll
+    @BeforeEach
     void setup() {
-        jwtAuthenticationService = new JWTAuthenticationService("bweifubgvsdnf4wg");
+        authenticationService = new JWTAuthenticationService(jwtSecret);
         var userEntity = UserEntity.builder()
                 .username(USERNAME)
                 .email(EMAIL)
@@ -39,8 +40,8 @@ class JWTAuthenticationServiceTests {
 
     @Test
     void test_createToken_authenticateToken() {
-        var token = jwtAuthenticationService.createToken(savedUserEntity);
-        var userId = jwtAuthenticationService.getUserIdFromToken(token);
+        var token = authenticationService.createToken(savedUserEntity);
+        var userId = authenticationService.getUserIdFromToken(token);
         Assertions.assertEquals(savedUserEntity.getId(), userId);
     }
 
@@ -53,12 +54,12 @@ class JWTAuthenticationServiceTests {
                 .bio(BIO)
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> jwtAuthenticationService.createToken(userEntity));
+                () -> authenticationService.createToken(userEntity));
     }
 
     @Test
     void test_getUserIdFromToken_invalidToken() {
         Assertions.assertThrows(InvalidTokenException.class,
-                () -> jwtAuthenticationService.getUserIdFromToken("invalid.jwt.token"));
+                () -> authenticationService.getUserIdFromToken("invalid.jwt.token"));
     }
 }

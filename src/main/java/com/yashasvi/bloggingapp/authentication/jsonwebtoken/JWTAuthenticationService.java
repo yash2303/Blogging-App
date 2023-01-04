@@ -3,6 +3,7 @@ package com.yashasvi.bloggingapp.authentication.jsonwebtoken;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.yashasvi.bloggingapp.authentication.AuthenticationService;
 import com.yashasvi.bloggingapp.authentication.exceptions.InvalidTokenException;
 import com.yashasvi.bloggingapp.users.UserEntity;
@@ -29,6 +30,7 @@ public class JWTAuthenticationService implements AuthenticationService {
         return JWT.create()
                 .withSubject(String.valueOf(userEntity.getId()))
                 .withIssuedAt(new Date())
+                .withExpiresAt(getExpirationTimestamp())
                 .sign(algorithm);
     }
 
@@ -39,8 +41,10 @@ public class JWTAuthenticationService implements AuthenticationService {
                     .build()
                     .verify(token)
                     .getSubject());
+        } catch (TokenExpiredException e) {
+            throw new InvalidTokenException("Authentication failure, token expired");
         } catch (JWTVerificationException e) {
-            throw new InvalidTokenException("Authentication failure, invalid JWT token");
+            throw new InvalidTokenException("Authentication failure, invalid token");
         }
     }
 }
