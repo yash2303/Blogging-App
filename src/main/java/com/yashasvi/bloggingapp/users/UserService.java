@@ -1,5 +1,6 @@
 package com.yashasvi.bloggingapp.users;
 
+import com.yashasvi.bloggingapp.authentication.AuthenticationService;
 import com.yashasvi.bloggingapp.users.dtos.LoginUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
@@ -8,6 +9,7 @@ import com.yashasvi.bloggingapp.users.exceptions.InvalidCredentialsException;
 import com.yashasvi.bloggingapp.users.exceptions.UserAlreadyExists;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,14 @@ import java.util.Objects;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       @Qualifier("JWTAuthenticationService") AuthenticationService authenticationService,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -35,10 +41,11 @@ public class UserService {
                 .bio(registerUserRequestDto.getBio())
                 .build();
         var savedUser = userRepository.save(userEntity);
+        var authToken = authenticationService.createToken(savedUser);
         return UserResponseDto.builder()
                 .userId(savedUser.getId())
                 .username(savedUser.getUsername())
-                .authToken(generateAuthToken(savedUser.getId()))
+                .authToken(authToken)
                 .build();
     }
 
@@ -48,10 +55,11 @@ public class UserService {
                 !passwordEncoder.matches(loginUserRequestDto.getPassword(), userEntity.getPassword())) {
             throw new InvalidCredentialsException("Input username or password is incorrect");
         }
+        var authToken = authenticationService.createToken(userEntity);
         return UserResponseDto.builder()
                 .userId(userEntity.getId())
                 .username(userEntity.getUsername())
-                .authToken(generateAuthToken(userEntity.getId()))
+                .authToken(authToken)
                 .build();
     }
 
@@ -67,10 +75,5 @@ public class UserService {
         } catch (EntityNotFoundException ex) {
             throw new UserNotFoundException("User with input userId doesn't exist");
         }
-    }
-
-    // TODO: Add auth token generation logic
-    private String generateAuthToken(Long userId) {
-        return "";
     }
 }

@@ -1,5 +1,6 @@
 package com.yashasvi.bloggingapp.users;
 
+import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JWTAuthenticationService;
 import com.yashasvi.bloggingapp.users.dtos.LoginUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
@@ -7,12 +8,13 @@ import com.yashasvi.bloggingapp.users.exceptions.InvalidCredentialsException;
 import com.yashasvi.bloggingapp.users.exceptions.UserAlreadyExists;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -30,11 +32,14 @@ import static com.yashasvi.bloggingapp.TestUtils.USER_ID_10;
 class UserServiceTests {
     @Autowired
     private UserRepository userRepository;
+    @Value("${auth.jwt-secret}")
+    private String jwtSecret;
     private UserService userService;
 
-    @BeforeAll
+    @BeforeEach
     void setup() {
-        userService = new UserService(userRepository, new BCryptPasswordEncoder());
+        var authenticationService = new JWTAuthenticationService(jwtSecret);
+        userService = new UserService(userRepository, authenticationService, new BCryptPasswordEncoder());
     }
 
     @Test

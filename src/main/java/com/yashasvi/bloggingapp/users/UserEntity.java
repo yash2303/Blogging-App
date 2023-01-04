@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.util.List;
