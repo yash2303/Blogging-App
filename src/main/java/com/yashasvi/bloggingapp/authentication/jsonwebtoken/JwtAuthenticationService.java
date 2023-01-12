@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Objects;
 
-@Service
-public class JWTAuthenticationService implements AuthenticationService {
+@Service("JwtAuthenticationService")
+public class JwtAuthenticationService implements AuthenticationService {
     private final Algorithm algorithm;
 
-    public JWTAuthenticationService(@Value("${auth.jwt-secret}") String jwtSecret) {
+    public JwtAuthenticationService(@Value("${auth.jwt-secret}") String jwtSecret) {
         algorithm = Algorithm.HMAC256(jwtSecret);
     }
 

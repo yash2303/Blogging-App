@@ -18,17 +18,17 @@ import static com.yashasvi.bloggingapp.TestUtils.USERNAME;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JWTAuthenticationServiceTests {
+class AuthenticationImplServiceTests {
     @Autowired
     private UserRepository userRepository;
     @Value("${auth.jwt-secret}")
     private String jwtSecret;
-    private JWTAuthenticationService authenticationService;
+    private JwtAuthenticationService authenticationService;
     private UserEntity savedUserEntity;
 
     @BeforeEach
     void setup() {
-        authenticationService = new JWTAuthenticationService(jwtSecret);
+        authenticationService = new JwtAuthenticationService(jwtSecret);
         var userEntity = UserEntity.builder()
                 .username(USERNAME)
                 .email(EMAIL)
