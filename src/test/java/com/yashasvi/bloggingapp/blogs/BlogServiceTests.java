@@ -1,7 +1,7 @@
 package com.yashasvi.bloggingapp.blogs;
 
 import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JwtAuthenticationService;
-import com.yashasvi.bloggingapp.blogs.dtos.BlogDto;
+import com.yashasvi.bloggingapp.blogs.dtos.BlogResponseDto;
 import com.yashasvi.bloggingapp.blogs.dtos.CreateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
 import com.yashasvi.bloggingapp.users.UserRepository;
@@ -103,13 +103,13 @@ class BlogServiceTests {
                 .build();
         var createBlogResponseDto1 = blogService.createBlog(userId2, createBlogRequestDto1);
         var actualResponse = blogService.getGeneralFeed();
-        var expectedBlogDto = BlogDto.builder()
+        var expectedBlogDto = BlogResponseDto.builder()
                 .id(createBlogResponseDto.getId())
                 .title(TITLE)
                 .authorId(userId1)
                 .content(CONTENT)
                 .build();
-        var expectedBlogDto1 = BlogDto.builder()
+        var expectedBlogDto1 = BlogResponseDto.builder()
                 .id(createBlogResponseDto1.getId())
                 .title(TITLE_1)
                 .authorId(userId2)
@@ -134,13 +134,13 @@ class BlogServiceTests {
                 .build();
         var createBlogResponseDto1 = blogService.createBlog(userId1, createBlogRequestDto1);
         var actualResponse = blogService.getBlogsByAuthor(userId1);
-        var expectedBlogDto = BlogDto.builder()
+        var expectedBlogDto = BlogResponseDto.builder()
                 .id(createBlogResponseDto.getId())
                 .title(TITLE)
                 .authorId(userId1)
                 .content(CONTENT)
                 .build();
-        var expectedBlogDto1 = BlogDto.builder()
+        var expectedBlogDto1 = BlogResponseDto.builder()
                 .id(createBlogResponseDto1.getId())
                 .title(TITLE_1)
                 .authorId(userId1)

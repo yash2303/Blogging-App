@@ -6,13 +6,16 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
-import java.util.List;
-
 @Builder
 @Getter
 @ToString
 @EqualsAndHashCode
-public class FeedDto {
+public class BlogResponseDto {
     @NonNull
-    private List<BlogResponseDto> blogListDto;
+    private Long id;
+    @NonNull
+    private String title;
+    @NonNull
+    private Long authorId;
+    private String content;
 }

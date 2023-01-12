@@ -12,11 +12,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,6 +31,9 @@ public class BlogEntity extends AbstractAuditable<UserEntity, Long> {
     @ManyToOne
     @JoinColumn(nullable = false)
     private UserEntity author;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     @Column(columnDefinition = "TEXT")
     private String content;
