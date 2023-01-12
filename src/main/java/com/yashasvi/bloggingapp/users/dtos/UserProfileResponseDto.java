@@ -1,13 +1,11 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.lang.NonNull;
 
-@Getter
+@Data
 @Builder
-@EqualsAndHashCode
 public class UserProfileResponseDto {
     @NonNull
     private Long id;

@@ -1,14 +1,15 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.springframework.lang.NonNull;
-
-@Getter
+@Data
 @Builder
-@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterUserRequestDto {
     @NonNull
     private String username;

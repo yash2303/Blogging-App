@@ -9,4 +9,8 @@ public class TestUtils {
     public static final String PASSWORD = "password";
     public static final String PASSWORD_1 = "password1";
     public static final String BIO = "bio";
+    public static final String TITLE = "title";
+    public static final String TITLE_1 = "title1";
+    public static final String CONTENT = "content";
+    public static final String CONTENT_1 = "content1";
 }

@@ -8,7 +8,6 @@ import com.yashasvi.bloggingapp.users.dtos.UserResponseDto;
 import com.yashasvi.bloggingapp.users.exceptions.InvalidCredentialsException;
 import com.yashasvi.bloggingapp.users.exceptions.UserAlreadyExists;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       @Qualifier("JWTAuthenticationService") AuthenticationService authenticationService,
+                       @Qualifier("JwtAuthenticationService") AuthenticationService authenticationService,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
@@ -64,16 +63,17 @@ public class UserService {
     }
 
     public UserProfileResponseDto getUserProfile(Long userId) {
-        try {
-            var userEntity = userRepository.getReferenceById(userId);
-            return UserProfileResponseDto.builder()
-                    .id(userId)
-                    .username(userEntity.getUsername())
-                    .email(userEntity.getEmail())
-                    .bio(userEntity.getBio())
-                    .build();
-        } catch (EntityNotFoundException ex) {
-            throw new UserNotFoundException("User with input userId doesn't exist");
-        }
+        var userEntity = getUserById(userId);
+        return UserProfileResponseDto.builder()
+                .id(userId)
+                .username(userEntity.getUsername())
+                .email(userEntity.getEmail())
+                .bio(userEntity.getBio())
+                .build();
+    }
+
+    public UserEntity getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with input userId doesn't exist"));
     }
 }

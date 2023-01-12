@@ -1,13 +1,11 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.springframework.lang.NonNull;
+import lombok.Data;
+import lombok.NonNull;
 
-@Getter
+@Data
 @Builder
-@EqualsAndHashCode
 public class LoginUserRequestDto {
     @NonNull
     private String username;

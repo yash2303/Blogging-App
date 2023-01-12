@@ -1,6 +1,6 @@
 package com.yashasvi.bloggingapp.users;
 
-import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JWTAuthenticationService;
+import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JwtAuthenticationService;
 import com.yashasvi.bloggingapp.users.dtos.LoginUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
@@ -38,7 +38,7 @@ class UserServiceTests {
 
     @BeforeEach
     void setup() {
-        var authenticationService = new JWTAuthenticationService(jwtSecret);
+        var authenticationService = new JwtAuthenticationService(jwtSecret);
         userService = new UserService(userRepository, authenticationService, new BCryptPasswordEncoder());
     }
 
