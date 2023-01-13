@@ -1,5 +1,6 @@
 package com.yashasvi.bloggingapp.blogs.dtos;
 
+import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,6 +17,6 @@ public class BlogResponseDto {
     @NonNull
     private String title;
     @NonNull
-    private Long authorId;
+    private UserProfileResponseDto author;
     private String content;
 }

@@ -39,7 +39,7 @@ public class BlogController {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long blogId,
             @RequestBody UpdateBlogRequestDto updateBlogRequestDto) {
-        var blogResponseDto = blogService.updateBlog(blogId, updateBlogRequestDto);
+        var blogResponseDto = blogService.updateBlog(userId, blogId, updateBlogRequestDto);
         return ResponseEntity.created(URI.create("/blogs/" + blogResponseDto.getId())).body(blogResponseDto);
     }
 

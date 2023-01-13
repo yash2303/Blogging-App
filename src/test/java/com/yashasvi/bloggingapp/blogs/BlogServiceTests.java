@@ -7,6 +7,7 @@ import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
 import com.yashasvi.bloggingapp.users.UserRepository;
 import com.yashasvi.bloggingapp.users.UserService;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
+import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,8 +43,8 @@ class BlogServiceTests {
     @Value("${auth.jwt-secret}")
     private String jwtSecret;
     private BlogService blogService;
-    private Long userId1;
-    private Long userId2;
+    private UserProfileResponseDto user1;
+    private UserProfileResponseDto user2;
 
     @BeforeEach
     void setup() {
@@ -57,7 +58,13 @@ class BlogServiceTests {
                 .bio(BIO)
                 .build();
         var registeredUser1 = userService.registerUser(registerUserRequestDto);
-        userId1 = registeredUser1.getUserId();
+        var userEntity1 = userRepository.findById(registeredUser1.getUserId()).orElse(null);
+        user1 = UserProfileResponseDto.builder()
+                .id(userEntity1.getId())
+                .username(userEntity1.getUsername())
+                .email(userEntity1.getEmail())
+                .bio(userEntity1.getBio())
+                .build();
         var registerUserRequestDto1 = RegisterUserRequestDto.builder()
                 .username(USERNAME_1)
                 .email(EMAIL_1)
@@ -65,7 +72,13 @@ class BlogServiceTests {
                 .bio(BIO)
                 .build();
         var registeredUser2 = userService.registerUser(registerUserRequestDto1);
-        userId2 = registeredUser2.getUserId();
+        var userEntity2 = userRepository.findById(registeredUser2.getUserId()).orElse(null);
+        user2 = UserProfileResponseDto.builder()
+                .id(userEntity2.getId())
+                .username(userEntity2.getUsername())
+                .email(userEntity2.getEmail())
+                .bio(userEntity2.getBio())
+                .build();
     }
 
     @Test
@@ -74,9 +87,9 @@ class BlogServiceTests {
                 .title(TITLE)
                 .content(CONTENT)
                 .build();
-        var createBlogResponseDto = blogService.createBlog(userId1, createBlogRequestDto);
+        var createBlogResponseDto = blogService.createBlog(user1.getId(), createBlogRequestDto);
         Assertions.assertEquals(TITLE, createBlogResponseDto.getTitle());
-        Assertions.assertEquals(userId1, createBlogResponseDto.getAuthorId());
+        Assertions.assertEquals(user1, createBlogResponseDto.getAuthor());
         Assertions.assertEquals(CONTENT, createBlogResponseDto.getContent());
     }
 
@@ -96,23 +109,23 @@ class BlogServiceTests {
                 .title(TITLE)
                 .content(CONTENT)
                 .build();
-        var createBlogResponseDto = blogService.createBlog(userId1, createBlogRequestDto);
+        var createBlogResponseDto = blogService.createBlog(user1.getId(), createBlogRequestDto);
         var createBlogRequestDto1 = CreateBlogRequestDto.builder()
                 .title(TITLE_1)
                 .content(CONTENT_1)
                 .build();
-        var createBlogResponseDto1 = blogService.createBlog(userId2, createBlogRequestDto1);
+        var createBlogResponseDto1 = blogService.createBlog(user2.getId(), createBlogRequestDto1);
         var actualResponse = blogService.getGeneralFeed();
         var expectedBlogDto = BlogResponseDto.builder()
                 .id(createBlogResponseDto.getId())
                 .title(TITLE)
-                .authorId(userId1)
+                .author(user1)
                 .content(CONTENT)
                 .build();
         var expectedBlogDto1 = BlogResponseDto.builder()
                 .id(createBlogResponseDto1.getId())
                 .title(TITLE_1)
-                .authorId(userId2)
+                .author(user2)
                 .content(CONTENT_1)
                 .build();
         var expectedResponse = FeedDto.builder()
@@ -127,23 +140,23 @@ class BlogServiceTests {
                 .title(TITLE)
                 .content(CONTENT)
                 .build();
-        var createBlogResponseDto = blogService.createBlog(userId1, createBlogRequestDto);
+        var createBlogResponseDto = blogService.createBlog(user1.getId(), createBlogRequestDto);
         var createBlogRequestDto1 = CreateBlogRequestDto.builder()
                 .title(TITLE_1)
                 .content(CONTENT_1)
                 .build();
-        var createBlogResponseDto1 = blogService.createBlog(userId1, createBlogRequestDto1);
-        var actualResponse = blogService.getBlogsByAuthor(userId1);
+        var createBlogResponseDto1 = blogService.createBlog(user1.getId(), createBlogRequestDto1);
+        var actualResponse = blogService.getBlogsByAuthor(user1.getId());
         var expectedBlogDto = BlogResponseDto.builder()
                 .id(createBlogResponseDto.getId())
                 .title(TITLE)
-                .authorId(userId1)
+                .author(user1)
                 .content(CONTENT)
                 .build();
         var expectedBlogDto1 = BlogResponseDto.builder()
                 .id(createBlogResponseDto1.getId())
                 .title(TITLE_1)
-                .authorId(userId1)
+                .author(user1)
                 .content(CONTENT_1)
                 .build();
         var expectedResponse = FeedDto.builder()

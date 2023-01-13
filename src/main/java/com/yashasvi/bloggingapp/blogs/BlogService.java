@@ -5,13 +5,16 @@ import com.yashasvi.bloggingapp.blogs.dtos.CreateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
 import com.yashasvi.bloggingapp.blogs.dtos.UpdateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.exceptions.BlogNotFoundException;
+import com.yashasvi.bloggingapp.blogs.exceptions.UserNotAuthorisedException;
 import com.yashasvi.bloggingapp.users.UserEntity;
 import com.yashasvi.bloggingapp.users.UserRepository;
+import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogService {
@@ -35,9 +38,12 @@ public class BlogService {
                 .orElseThrow(() -> new UserNotFoundException("Author not found"));
     }
 
-    public BlogResponseDto updateBlog(Long blogId, UpdateBlogRequestDto updateBlogRequestDto) {
+    public BlogResponseDto updateBlog(Long userId, Long blogId, UpdateBlogRequestDto updateBlogRequestDto) {
         var blogEntity = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog with input blogId doesn't exist"));
+        if (!userId.equals(blogEntity.getAuthor().getId())) {
+            throw new UserNotAuthorisedException("Only author is authorised to update the blog");
+        }
         if (Objects.nonNull(updateBlogRequestDto.getTitle())) {
             blogEntity.setTitle(updateBlogRequestDto.getTitle());
         }
@@ -82,7 +88,7 @@ public class BlogService {
                 .map(userEntities -> userEntities.stream()
                         .map(blogRepository::findAllByAuthor)
                         .flatMap(List::stream)
-                        .toList())
+                        .collect(Collectors.toList()))
                 .map(this::convertToFeedDto)
                 .orElseThrow(() -> new UserNotFoundException("User with input userId not found"));
     }
@@ -92,17 +98,23 @@ public class BlogService {
                 .stream()
                 .filter(blogEntity -> !blogEntity.isDeleted())
                 .map(this::convertToBlogResponseDto)
-                .toList();
+                .collect(Collectors.toList());
         return FeedDto.builder()
                 .blogListDto(blogDtoList)
                 .build();
     }
 
     private BlogResponseDto convertToBlogResponseDto(BlogEntity blogEntity) {
+        var userEntity = blogEntity.getAuthor();
         return BlogResponseDto.builder()
                 .id(blogEntity.getId())
                 .title(blogEntity.getTitle())
-                .authorId(blogEntity.getId())
+                .author(UserProfileResponseDto.builder()
+                        .id(userEntity.getId())
+                        .username(userEntity.getUsername())
+                        .email(userEntity.getEmail())
+                        .bio(userEntity.getBio())
+                        .build())
                 .content(blogEntity.getContent())
                 .build();
     }
