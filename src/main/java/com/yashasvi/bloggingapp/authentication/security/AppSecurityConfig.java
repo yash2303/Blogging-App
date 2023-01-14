@@ -21,7 +21,12 @@ public class AppSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().disable().csrf().disable()
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/users/register", "/users/login", "/home").permitAll()
+                        .requestMatchers("/users/register",
+                                "/users/login",
+                                "/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationFilterImpl, AnonymousAuthenticationFilter.class)
