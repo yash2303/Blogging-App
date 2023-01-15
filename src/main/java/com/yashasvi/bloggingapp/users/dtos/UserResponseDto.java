@@ -1,16 +1,17 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.lang.NonNull;
 
 @Data
 @Builder
 public class UserResponseDto {
-    @NonNull
+    @NotNull
     private Long userId;
-    @NonNull
+    @NotEmpty
     private String username;
-    @NonNull
+    @NotEmpty
     private String authToken;
 }

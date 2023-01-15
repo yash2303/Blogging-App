@@ -1,14 +1,14 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 @Data
 @Builder
 public class LoginUserRequestDto {
-    @NonNull
+    @NotEmpty
     private String username;
-    @NonNull
+    @NotEmpty
     private String password;
 }

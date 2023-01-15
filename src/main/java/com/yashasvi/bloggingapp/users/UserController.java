@@ -4,6 +4,7 @@ import com.yashasvi.bloggingapp.users.dtos.LoginUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
 import com.yashasvi.bloggingapp.users.dtos.UserResponseDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{userId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<UserProfileResponseDto> getUserProfile(@PathVariable Long userId) {
         var userProfileResponseDto = userService.getUserProfile(userId);
         return ResponseEntity.ok(userProfileResponseDto);

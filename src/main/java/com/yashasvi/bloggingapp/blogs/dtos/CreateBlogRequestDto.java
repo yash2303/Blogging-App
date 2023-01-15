@@ -1,5 +1,6 @@
 package com.yashasvi.bloggingapp.blogs.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class CreateBlogRequestDto {
-    @NonNull
+    @NotEmpty
     private String title;
     @NonNull
     private String content;

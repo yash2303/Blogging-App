@@ -1,10 +1,11 @@
 package com.yashasvi.bloggingapp.blogs.dtos;
 
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Builder
@@ -12,11 +13,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class BlogResponseDto {
-    @NonNull
+    @NotNull
     private Long id;
-    @NonNull
+    @NotEmpty
     private String title;
-    @NonNull
+    @NotNull
     private UserProfileResponseDto author;
     private String content;
 }

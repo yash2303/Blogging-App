@@ -1,21 +1,21 @@
 package com.yashasvi.bloggingapp.users.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterUserRequestDto {
-    @NonNull
+    @NotEmpty
     private String username;
-    @NonNull
+    @NotEmpty
     private String password;
-    @NonNull
+    @NotEmpty
     private String email;
     private String bio;
 }

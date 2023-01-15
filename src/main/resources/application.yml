@@ -10,6 +10,9 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 auth:
   jwt-secret: "vr4567ujbvftyuikmnbresxcfreswert8y8uhbgyf32qsefg"
+springdoc:
+  api-docs:
+    path: /api-docs
