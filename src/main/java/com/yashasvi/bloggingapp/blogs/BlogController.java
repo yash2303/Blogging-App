@@ -4,6 +4,7 @@ import com.yashasvi.bloggingapp.blogs.dtos.BlogResponseDto;
 import com.yashasvi.bloggingapp.blogs.dtos.CreateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
 import com.yashasvi.bloggingapp.blogs.dtos.UpdateBlogRequestDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +28,7 @@ public class BlogController {
     }
 
     @PostMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<BlogResponseDto> createBlog(
             @AuthenticationPrincipal Long userId,
             @RequestBody CreateBlogRequestDto createBlogRequestDto) {
@@ -35,6 +37,7 @@ public class BlogController {
     }
 
     @PatchMapping("/{blogId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<BlogResponseDto> updateBlog(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long blogId,
@@ -44,24 +47,28 @@ public class BlogController {
     }
 
     @DeleteMapping("/{blogId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Void> deleteBlog(@AuthenticationPrincipal Long userId, @PathVariable Long blogId) {
         blogService.deleteBlog(userId, blogId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<FeedDto> getFeed() {
         FeedDto feedDto = blogService.getGeneralFeed();
         return ResponseEntity.ok(feedDto);
     }
 
     @GetMapping("/{blogId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<BlogResponseDto> getBlogById(@PathVariable Long blogId) {
         var blogDto = blogService.getBlogById(blogId);
         return ResponseEntity.ok(blogDto);
     }
 
     @GetMapping("/author/{authorId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<FeedDto> getBlogsByAuthor(@PathVariable Long authorId) {
         var feedDto = blogService.getBlogsByAuthor(authorId);
         return ResponseEntity.ok(feedDto);

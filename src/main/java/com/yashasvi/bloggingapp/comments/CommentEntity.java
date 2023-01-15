@@ -1,6 +1,7 @@
 package com.yashasvi.bloggingapp.comments;
 
 import com.yashasvi.bloggingapp.blogs.BlogEntity;
+import com.yashasvi.bloggingapp.common.BaseEntity;
 import com.yashasvi.bloggingapp.users.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "comments")
-public class CommentEntity extends AbstractAuditable<UserEntity, Long> {
+public class CommentEntity extends BaseEntity<Long> {
     @JoinColumn(columnDefinition = "TEXT", nullable = false)
     @ManyToOne
     private BlogEntity blog;

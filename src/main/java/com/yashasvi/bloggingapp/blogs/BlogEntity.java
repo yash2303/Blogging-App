@@ -1,6 +1,7 @@
 package com.yashasvi.bloggingapp.blogs;
 
 
+import com.yashasvi.bloggingapp.common.BaseEntity;
 import com.yashasvi.bloggingapp.users.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.util.List;
 
@@ -24,7 +24,8 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "blogs")
-public class BlogEntity extends AbstractAuditable<UserEntity, Long> {
+public class BlogEntity extends BaseEntity<Long> {
+
     @Column(columnDefinition = "TEXT", nullable = false)
     private String title;
 

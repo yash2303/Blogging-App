@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class BlogService {
@@ -96,7 +95,7 @@ public class BlogService {
                 .map(userEntities -> userEntities.stream()
                         .map(blogRepository::findAllByAuthor)
                         .flatMap(List::stream)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .map(this::convertToFeedDto)
                 .orElseThrow(() -> new UserNotFoundException("User with input userId not found"));
     }
@@ -125,6 +124,8 @@ public class BlogService {
                         .build())
                 .content(blogEntity.getContent())
                 .summary(blogEntity.getSummary())
+                .createdAt(blogEntity.getCreatedAt())
+                .updatedAt(blogEntity.getUpdatedAt())
                 .build();
     }
 

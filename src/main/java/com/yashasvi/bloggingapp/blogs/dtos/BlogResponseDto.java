@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Date;
+
 @Builder
 @Getter
 @ToString
@@ -21,4 +23,7 @@ public class BlogResponseDto {
     private UserProfileResponseDto author;
     private String summary;
     private String content;
+    @NotNull
+    private Date createdAt;
+    private Date updatedAt;
 }

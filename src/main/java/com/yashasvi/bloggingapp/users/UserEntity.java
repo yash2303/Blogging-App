@@ -1,5 +1,6 @@
 package com.yashasvi.bloggingapp.users;
 
+import com.yashasvi.bloggingapp.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -8,7 +9,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @Entity(name = "users")
-public class UserEntity extends AbstractAuditable<UserEntity, Long> {
+public class UserEntity extends BaseEntity<Long> {
     @Column(nullable = false, unique = true)
     private String username;
 
