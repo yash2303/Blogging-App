@@ -47,9 +47,7 @@ public class BlogService {
     public BlogResponseDto updateBlog(Long userId, Long blogId, UpdateBlogRequestDto updateBlogRequestDto) {
         var blogEntity = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog with input blogId doesn't exist"));
-        if (!userId.equals(blogEntity.getAuthor().getId())) {
-            throw new UserNotAuthorisedException("Only author is authorised to update the blog");
-        }
+        checkModifyPermissions(userId, blogEntity);
         if (Objects.nonNull(updateBlogRequestDto.getTitle())) {
             blogEntity.setTitle(updateBlogRequestDto.getTitle());
         }
@@ -69,9 +67,10 @@ public class BlogService {
                 .orElseThrow(() -> new BlogNotFoundException("Blog with input blogId doesn't exist"));
     }
 
-    public void deleteBlog(Long blogId) {
+    public void deleteBlog(Long userId, Long blogId) {
         var blogEntity = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog with input blogId doesn't exist"));
+        checkModifyPermissions(userId, blogEntity);
         blogEntity.setDeleted(true);
         blogRepository.save(blogEntity);
     }
@@ -107,7 +106,7 @@ public class BlogService {
                 .stream()
                 .filter(blogEntity -> !blogEntity.isDeleted())
                 .map(this::convertToBlogResponseDto)
-                .collect(Collectors.toList());
+                .toList();
         return FeedDto.builder()
                 .blogListDto(blogDtoList)
                 .build();
@@ -127,5 +126,11 @@ public class BlogService {
                 .content(blogEntity.getContent())
                 .summary(blogEntity.getSummary())
                 .build();
+    }
+
+    private void checkModifyPermissions(Long userId, BlogEntity blogEntity) {
+        if (!userId.equals(blogEntity.getAuthor().getId())) {
+            throw new UserNotAuthorisedException("Only author is authorised to update/delete the blog");
+        }
     }
 }

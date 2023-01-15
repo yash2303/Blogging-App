@@ -44,8 +44,8 @@ public class BlogController {
     }
 
     @DeleteMapping("/{blogId}")
-    public ResponseEntity<Void> deleteBlog(@PathVariable Long blogId) {
-        blogService.deleteBlog(blogId);
+    public ResponseEntity<Void> deleteBlog(@AuthenticationPrincipal Long userId, @PathVariable Long blogId) {
+        blogService.deleteBlog(userId, blogId);
         return ResponseEntity.noContent().build();
     }
 
@@ -62,7 +62,7 @@ public class BlogController {
     }
 
     @GetMapping("/author/{authorId}")
-    public ResponseEntity<FeedDto> getBlogByAuthor(@PathVariable Long authorId) {
+    public ResponseEntity<FeedDto> getBlogsByAuthor(@PathVariable Long authorId) {
         var feedDto = blogService.getBlogsByAuthor(authorId);
         return ResponseEntity.ok(feedDto);
     }
