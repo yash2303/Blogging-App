@@ -1,16 +1,38 @@
-# BLOGGING APP
+# Spring Boot Blogging Application
 
-## Problem Statement
-Make a backend web application for blogging which has built in capabilities to handle various users.
-
----
+This application is a simple blogging platform built using Java 17 and Spring Boot. It allows users to create, read, update, and delete blog posts. The application also has a built-in commenting system for users to leave comments on blog posts.
 
 ## Requirements
-- CRUD capabilities for **USERS**
-- CRUD capabilities for **BLOGS** which would be scoped under a **USER**. *i.e. only the user which creates a blog would be able to modify/delete it*
-- All **USERS** should be able to view **BLOGS** which have been posted
-- A **USER** should be able to write a **BLOG** and post it for everyone to see
-- A **USER** should be able to follow another **USER** so that their **BLOGS** are visible in former **USER**'s feed
-- A **USER** should be able to view **BLOG**s from non-followed users in explore tab
-- **USERS** should be able to **COMMENT** under a **BLOG**. *These comments would be public*
-- **USERS** should be able to LIKE / UNLIKE a **BLOG**
+* Java 17
+* Gradle
+* Spring Boot
+
+## Getting Started
+1. Clone the repository
+```shell
+git clone https://github.com/yash2303/Blogging-App.git
+```
+2. Build the project
+```shell
+./gradlew build
+```
+3. Run the application
+```shell
+./gradlew bootRun
+```
+
+## API documentation
+The application has Swagger integrated, so you can access the API documentation by going to the following URL in your browser:
+```
+http://localhost:8484/swagger-ui.html
+```
+
+## How to Contribute
+We welcome contributions to this project! Please follow these guidelines when submitting pull requests:
+
+All code changes should be accompanied by relevant test cases.
+* The project should be able to build and run without errors.
+* Follow the code style and conventions used in the existing code.
+
+## Contact Information
+The project maintainer can be contacted at galavyashasvi23@gmail.com
