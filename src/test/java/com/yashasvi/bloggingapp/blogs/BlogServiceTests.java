@@ -4,12 +4,12 @@ import com.yashasvi.bloggingapp.authentication.jsonwebtoken.JwtAuthenticationSer
 import com.yashasvi.bloggingapp.blogs.dtos.BlogResponseDto;
 import com.yashasvi.bloggingapp.blogs.dtos.CreateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
+import com.yashasvi.bloggingapp.blogs.summarizer.OpenNLPTextSummarizer;
 import com.yashasvi.bloggingapp.users.UserRepository;
 import com.yashasvi.bloggingapp.users.UserService;
 import com.yashasvi.bloggingapp.users.dtos.RegisterUserRequestDto;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
 import com.yashasvi.bloggingapp.users.exceptions.UserNotFoundException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,13 +25,15 @@ import static com.yashasvi.bloggingapp.TestUtils.CONTENT;
 import static com.yashasvi.bloggingapp.TestUtils.CONTENT_1;
 import static com.yashasvi.bloggingapp.TestUtils.EMAIL;
 import static com.yashasvi.bloggingapp.TestUtils.EMAIL_1;
+import static com.yashasvi.bloggingapp.TestUtils.INVALID_USER_ID;
 import static com.yashasvi.bloggingapp.TestUtils.PASSWORD;
 import static com.yashasvi.bloggingapp.TestUtils.PASSWORD_1;
 import static com.yashasvi.bloggingapp.TestUtils.TITLE;
 import static com.yashasvi.bloggingapp.TestUtils.TITLE_1;
 import static com.yashasvi.bloggingapp.TestUtils.USERNAME;
 import static com.yashasvi.bloggingapp.TestUtils.USERNAME_1;
-import static com.yashasvi.bloggingapp.TestUtils.USER_ID_10;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -48,7 +50,8 @@ class BlogServiceTests {
 
     @BeforeEach
     void setup() {
-        blogService = new BlogService(blogRepository, userRepository);
+        var textSummarizer = new OpenNLPTextSummarizer();
+        blogService = new BlogService(blogRepository, userRepository, textSummarizer);
         var authenticationService = new JwtAuthenticationService(jwtSecret);
         var userService = new UserService(userRepository, authenticationService, new BCryptPasswordEncoder());
         var registerUserRequestDto = RegisterUserRequestDto.builder()
@@ -88,9 +91,9 @@ class BlogServiceTests {
                 .content(CONTENT)
                 .build();
         var createBlogResponseDto = blogService.createBlog(user1.getId(), createBlogRequestDto);
-        Assertions.assertEquals(TITLE, createBlogResponseDto.getTitle());
-        Assertions.assertEquals(user1, createBlogResponseDto.getAuthor());
-        Assertions.assertEquals(CONTENT, createBlogResponseDto.getContent());
+        assertEquals(TITLE, createBlogResponseDto.getTitle());
+        assertEquals(user1, createBlogResponseDto.getAuthor());
+        assertEquals(CONTENT, createBlogResponseDto.getContent());
     }
 
     @Test
@@ -99,8 +102,8 @@ class BlogServiceTests {
                 .title(TITLE)
                 .content(CONTENT)
                 .build();
-        Assertions.assertThrows(UserNotFoundException.class,
-                () -> blogService.createBlog(USER_ID_10, createBlogRequestDto));
+        assertThrows(UserNotFoundException.class,
+                () -> blogService.createBlog(INVALID_USER_ID, createBlogRequestDto));
     }
 
     @Test
@@ -131,7 +134,8 @@ class BlogServiceTests {
         var expectedResponse = FeedDto.builder()
                 .blogListDto(List.of(expectedBlogDto, expectedBlogDto1))
                 .build();
-        Assertions.assertEquals(expectedResponse, actualResponse);
+
+        compareFeedDto(expectedResponse, actualResponse);
     }
 
     @Test
@@ -162,12 +166,25 @@ class BlogServiceTests {
         var expectedResponse = FeedDto.builder()
                 .blogListDto(List.of(expectedBlogDto, expectedBlogDto1))
                 .build();
-        Assertions.assertEquals(expectedResponse, actualResponse);
+        compareFeedDto(actualResponse, expectedResponse);
     }
 
     @Test
     void test_getBlogsByAuthor_authorNotFound() {
-        Assertions.assertThrows(UserNotFoundException.class,
-                () -> blogService.getBlogsByAuthor(USER_ID_10));
+        assertThrows(UserNotFoundException.class,
+                () -> blogService.getBlogsByAuthor(INVALID_USER_ID));
+    }
+
+    private void compareFeedDto(FeedDto actualResponse, FeedDto expectedResponse) {
+        assertEquals(expectedResponse.getBlogListDto().size(), actualResponse.getBlogListDto().size());
+        for (int i = 0; i < expectedResponse.getBlogListDto().size(); i++) {
+            compareBlogDtoSkipSummary(expectedResponse.getBlogListDto().get(i), actualResponse.getBlogListDto().get(i));
+        }
+    }
+
+    private void compareBlogDtoSkipSummary(BlogResponseDto expected, BlogResponseDto actual) {
+        assertEquals(expected.getTitle(), actual.getTitle());
+        assertEquals(expected.getAuthor(), actual.getAuthor());
+        assertEquals(expected.getContent(), actual.getContent());
     }
 }

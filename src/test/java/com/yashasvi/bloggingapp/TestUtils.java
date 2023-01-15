@@ -1,7 +1,7 @@
 package com.yashasvi.bloggingapp;
 
 public class TestUtils {
-    public static final Long USER_ID_10 = 10L;
+    public static final Long INVALID_USER_ID = 0L;
     public static final String USERNAME = "username";
     public static final String USERNAME_1 = "username1";
     public static final String EMAIL = "email@email.com";

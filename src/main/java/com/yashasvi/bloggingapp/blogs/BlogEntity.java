@@ -36,6 +36,9 @@ public class BlogEntity extends AbstractAuditable<UserEntity, Long> {
     private boolean isDeleted;
 
     @Column(columnDefinition = "TEXT")
+    private String summary;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToMany

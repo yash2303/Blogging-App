@@ -24,7 +24,7 @@ import static com.yashasvi.bloggingapp.TestUtils.PASSWORD;
 import static com.yashasvi.bloggingapp.TestUtils.PASSWORD_1;
 import static com.yashasvi.bloggingapp.TestUtils.USERNAME;
 import static com.yashasvi.bloggingapp.TestUtils.USERNAME_1;
-import static com.yashasvi.bloggingapp.TestUtils.USER_ID_10;
+import static com.yashasvi.bloggingapp.TestUtils.INVALID_USER_ID;
 
 @DataJpaTest
 @RunWith(MockitoJUnitRunner.class)
@@ -143,6 +143,6 @@ class UserServiceTests {
     @Test
     void test_getUserProfile_userNotFound() {
         Assertions.assertThrows(UserNotFoundException.class,
-                () -> userService.getUserProfile(USER_ID_10));
+                () -> userService.getUserProfile(INVALID_USER_ID));
     }
 }

@@ -6,6 +6,7 @@ import com.yashasvi.bloggingapp.blogs.dtos.FeedDto;
 import com.yashasvi.bloggingapp.blogs.dtos.UpdateBlogRequestDto;
 import com.yashasvi.bloggingapp.blogs.exceptions.BlogNotFoundException;
 import com.yashasvi.bloggingapp.blogs.exceptions.UserNotAuthorisedException;
+import com.yashasvi.bloggingapp.blogs.summarizer.TextSummarizer;
 import com.yashasvi.bloggingapp.users.UserEntity;
 import com.yashasvi.bloggingapp.users.UserRepository;
 import com.yashasvi.bloggingapp.users.dtos.UserProfileResponseDto;
@@ -18,20 +19,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class BlogService {
+    private static final int NUMBER_OF_SENTENCES_IN_SUMMARY = 4;
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
+    private final TextSummarizer textSummarizer;
 
-    public BlogService(BlogRepository blogRepository, UserRepository userRepository) {
+    public BlogService(BlogRepository blogRepository, UserRepository userRepository, TextSummarizer textSummarizer) {
         this.blogRepository = blogRepository;
         this.userRepository = userRepository;
+        this.textSummarizer = textSummarizer;
     }
 
     public BlogResponseDto createBlog(Long authorId, CreateBlogRequestDto createBlogRequestDto) {
         var userEntity = userRepository.findById(authorId);
+        var blogSummary = textSummarizer.summarize(createBlogRequestDto.getContent(), NUMBER_OF_SENTENCES_IN_SUMMARY);
         return userEntity.map(author -> BlogEntity.builder()
                         .author(author)
                         .title(createBlogRequestDto.getTitle())
                         .content(createBlogRequestDto.getContent())
+                        .summary(blogSummary)
                         .build())
                 .map(blogRepository::save)
                 .map(this::convertToBlogResponseDto)
@@ -48,6 +54,8 @@ public class BlogService {
             blogEntity.setTitle(updateBlogRequestDto.getTitle());
         }
         if (Objects.nonNull(updateBlogRequestDto.getContent())) {
+            var blogSummary = textSummarizer.summarize(updateBlogRequestDto.getContent(), NUMBER_OF_SENTENCES_IN_SUMMARY);
+            blogEntity.setSummary(blogSummary);
             blogEntity.setContent(updateBlogRequestDto.getContent());
         }
         var savedBlogEntity = blogRepository.save(blogEntity);
@@ -68,7 +76,8 @@ public class BlogService {
         blogRepository.save(blogEntity);
     }
 
-    // TODO: Add sorting and pagination logic
+    // TODO: Add sorting and pagination logic in all FeedDto
+    // TODO: Remove blog content from FeedDto, will help reduce payload size
     public FeedDto getGeneralFeed() {
         var blogEntities = blogRepository.findAll();
         return convertToFeedDto(blogEntities);
@@ -116,6 +125,7 @@ public class BlogService {
                         .bio(userEntity.getBio())
                         .build())
                 .content(blogEntity.getContent())
+                .summary(blogEntity.getSummary())
                 .build();
     }
 }

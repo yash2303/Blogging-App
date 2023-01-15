@@ -19,5 +19,6 @@ public class BlogResponseDto {
     private String title;
     @NotNull
     private UserProfileResponseDto author;
+    private String summary;
     private String content;
 }
