@@ -1,6 +1,8 @@
 # Spring Boot Blogging Application
 
-This application is a simple blogging platform built using Java 17 and Spring Boot. It allows users to create, read, update, and delete blog posts. The application also has a built-in commenting system for users to leave comments on blog posts.
+This application is a simple blogging platform built using Java 17 and Spring Boot. 
+It supports user registration and login. It allows logged-in users to create, read, update, and delete blog posts. 
+This application serves as the backend for the React-Redux frontend application which is available at https://github.com/yash2303/blogging-app-frontend.git and runs on port 3000.
 
 ## Requirements
 * Java 17
